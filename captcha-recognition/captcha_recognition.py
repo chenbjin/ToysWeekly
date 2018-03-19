@@ -15,7 +15,7 @@ from utils import convert_to_keras_target, convert_to_char_label
 from common import INPUT_SHAPE, BATCH_SIZE, EPOCHS
 from architecture import convnet, multi_convnet
 
-def train(x_train, y_train, x_test, y_test, default_model='multi_convnet', num_class=4):
+def train(x_train, y_train, x_test, y_test, default_model='multi_convnet', num_class=62):
     """Train model"""
     if default_model == 'multi_convnet':
         model = multi_convnet(INPUT_SHAPE, num_class)
@@ -66,12 +66,6 @@ if __name__ == '__main__':
     
     y_train = convert_to_keras_target(y_train)
     y_test = convert_to_keras_target(y_test)
-    #y_train = np.array(y_train)
-    #y_test = np.array(y_test)
-    print len(y_train) 
-    print y_train[0].shape
-    print len(y_test) 
-    print y_test[0].shape
     
     model = train(x_train, y_train, x_test, y_test)
     #model = load_model('my_model.h5')
