@@ -28,9 +28,23 @@ def one_hot_decode(vec, char_list=CAPTCHA_LIST):
         text.append(CAPTCHA_LIST[np.argmax(probs)])
     return text
 
-def convert_to_keras_target(labels, char_len=4):
+def convert_to_general_target(labels, char_len=4):
     """
-    Translate labels to keras target format, for multi-output architecture(4 softmax),
+    Translate labels to keras general target format, which concatenate one-hot vector
+    
+    Args:
+        labels: a list of sample's label, shape like ['BN2D','fs2n', ...]
+    Return:
+        y: a numpy array, shape is (len(labels), 4, 62)
+    """
+    labels = [one_hot_encode(label) for label in labels]
+    y = [np.concatenate(label) for label in labels]
+    y = np.array(y)
+    return y
+
+def convert_to_multi_output_target(labels, char_len=4):
+    """
+    Translate labels to keras multi-output target format, for multi-output architecture(4 softmax),
     the target is a list of 4 Numpy arrays.
     
     Args:
@@ -38,7 +52,7 @@ def convert_to_keras_target(labels, char_len=4):
         char_len: the len of characters of the captcha
 
     Return:
-        y: a list of 4 Numpy arrays, shape like (4, batch_size, 62)
+        y: a list of 4 Numpy arrays, shape like (4, len(labels), 62)
     """
     labels = [one_hot_encode(label) for label in labels]
     y = [[] for _ in range(char_len)]
@@ -48,9 +62,9 @@ def convert_to_keras_target(labels, char_len=4):
     y = [arr for arr in np.array(y)]
     return y
 
-def convert_to_char_label(preds, char_len=4):
+def revert_to_char_label(preds, char_len=4, num_class=62):
     """
-    Translate the output of model.predict() to characters label
+    Revert the output of model.predict() to characters label
 
     Args:
         preds: a list of 4 probability Numpy arrays, 
@@ -60,14 +74,21 @@ def convert_to_char_label(preds, char_len=4):
         labels: a list of label
     """
     labels = []
-    for idx in range(char_len):
-        preds[idx] = one_hot_decode(preds[idx])
-    batch_size = len(preds[0])
-    for i in range(batch_size):
-        label = []
-        for j in range(char_len):
-            label.append(preds[j][i])
-        labels.append(''.join(label))
+    if len(preds) == char_len:
+        for idx in range(char_len):
+            preds[idx] = one_hot_decode(preds[idx])
+        batch_size = len(preds[0])
+        for i in range(batch_size):
+            label = []
+            for j in range(char_len):
+                label.append(preds[j][i])
+            labels.append(''.join(label))
+    else:
+        for i in range(len(preds)):
+            label = []
+            for j in range(char_len):
+                label.append(preds[i][num_class*j:num_class*(j+1)])
+            labels.append(''.join(one_hot_decode(label)))
     return labels
 
 def load_data(img_dir='captcha_img/'):
@@ -87,7 +108,7 @@ def load_data(img_dir='captcha_img/'):
         label.append(y)
     return [data, label]
 
-def split_data(x, y, ratio=0.2):
+def split_data(x, y, ratio=0.15):
     """Split data for train and test"""
     test_size = int(len(y)*ratio)
     x_test = x[:test_size]
@@ -96,3 +117,11 @@ def split_data(x, y, ratio=0.2):
     y_train = y[test_size:]
     return [x_train, y_train, x_test, y_test]
 
+def load_image(img_path):
+    data = load_img(img_path, True)
+    data = img_to_array(data)
+    x = np.array(data)
+    x = np.expand_dims(x, axis=0)
+    x = 255 - x
+    x /= 255
+    return x

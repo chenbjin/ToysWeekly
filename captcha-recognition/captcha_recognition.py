@@ -10,8 +10,10 @@ import numpy as np
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 from keras.models import load_model
 
-from utils import load_data, split_data
-from utils import convert_to_keras_target, convert_to_char_label
+from utils import load_data, split_data, load_image
+from utils import convert_to_multi_output_target
+from utils import convert_to_general_target
+from utils import revert_to_char_label
 from common import INPUT_SHAPE, BATCH_SIZE, EPOCHS
 from architecture import convnet, multi_convnet
 
@@ -41,7 +43,7 @@ def train(x_train, y_train, x_test, y_test, default_model='multi_convnet', num_c
 def pred(model, x_pred, labels=None):
     """Predict and test"""
     y_pred = model.predict(x_pred, batch_size=BATCH_SIZE)
-    y_pred_labels = convert_to_char_label(y_pred) 
+    y_pred_labels = revert_to_char_label(y_pred) 
     if labels:
         nb_labels = len(labels)
         nb_correct = sum(y_pred_labels[i] == labels[i] for i in range(nb_labels))
@@ -51,7 +53,15 @@ def pred(model, x_pred, labels=None):
         return None
     return y_pred_labels
 
-if __name__ == '__main__':
+def break_captcha(model, img_path, default_model='convnet'):
+    """Recognize captcha from img_path"""
+    x = load_image(img_path)
+    pred = model.predict(x)
+    label = revert_to_char_label(pred)
+    print label
+    return label[0]
+
+def main():
     [data, labels] = load_data()
     [x_train, y_train, x_test, y_test] = split_data(data, labels)
     val_labels = y_test
@@ -62,11 +72,20 @@ if __name__ == '__main__':
     x_test = np.array(x_test)
     x_test = 255 - x_test
     x_test /= 255
-    #print x_train.shape
+    # multi-convnet model 
+    #y_train = convert_to_multi_output_target(y_train)
+    #y_test = convert_to_multi_output_target(y_test)
+    #model = train(x_train, y_train, x_test, y_test)
     
-    y_train = convert_to_keras_target(y_train)
-    y_test = convert_to_keras_target(y_test)
-    
-    model = train(x_train, y_train, x_test, y_test)
+    # convnet model
+    y_train = convert_to_general_target(y_train)
+    y_test = convert_to_general_target(y_test)
+    model = train(x_train, y_train, x_test, y_test, default_model='convnet')
     #model = load_model('my_model.h5')
     pred(model, x_test, val_labels)
+
+if __name__ == '__main__':
+    main()
+    #model = load_model('my_model.h5')
+    #img_path = 'captcha_img/captcha_2-hnMM.jpg'
+    #break_captcha(model, img_path)
