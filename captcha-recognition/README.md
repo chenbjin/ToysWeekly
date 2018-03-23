@@ -1,6 +1,11 @@
 # captcha-recognition
 
-CNN验证码整体识别，使用两种不同结构的CNN来做验证码识别。实验数据集是百度莱茨狗的验证码，目前convnet的准确率是85.7%，忽略大小写准确率93.2%。
+CNN验证码整体识别，使用两种不同结构的CNN来做验证码识别。实验数据集是百度莱茨狗的验证码，目前效果如下：
+
+|Model|Accuracy|Ingore Case Accuracy|
+|----|----|----|
+|convnet|85.7%|93.2%|
+|mulit-convnet|82.0%|90.5%|
 
 ## 数据收集
 

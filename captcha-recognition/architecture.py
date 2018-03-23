@@ -36,6 +36,7 @@ def convnet(input_shape, num_class):
 def multi_convnet(input_shape, num_class, output_size=4):
     """四个输出4个softmax
     """
+    
     model_input = Input(shape=input_shape)
     # 1 conv
     conv_1 = Conv2D(64, kernel_size=(5, 9), activation='relu')(model_input)
@@ -45,8 +46,12 @@ def multi_convnet(input_shape, num_class, output_size=4):
     conv_2 = Conv2D(64, kernel_size=(5, 7), activation='relu')(drop_1)
     pool_2 = MaxPooling2D(pool_size=(2, 4))(conv_2)
     drop_2 = Dropout(0.5)(pool_2)
+    # 3 conv
+    conv_3 = Conv2D(32, kernel_size=(3, 5), activation='relu')(drop_2)
+    pool_3 = MaxPooling2D(pool_size=(2, 2))(conv_3)
+    drop_3 = Dropout(0.2)(pool_3)
     # flatten
-    flat = Flatten()(drop_2)
+    flat = Flatten()(drop_3)
     # output
     out = []
     for i in range(output_size):
