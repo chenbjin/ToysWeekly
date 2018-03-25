@@ -15,5 +15,11 @@ CNN验证码整体识别，使用两种不同结构的CNN来做验证码识别�
 
 ```bash
 pip install -r requirements.txt
-python captcha_recognition.py
+python train.py
+```
+
+## 识别新图片
+
+```bash
+python test.py
 ```
