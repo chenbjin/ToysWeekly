@@ -69,14 +69,14 @@ def main():
     x_test /= 255
     
     # multi-convnet model 
-    #y_train = convert_to_multi_output_target(y_train)
-    #y_test = convert_to_multi_output_target(y_test)
-    #model = train(x_train, y_train, x_test, y_test)
+    y_train = convert_to_multi_output_target(y_train)
+    y_test = convert_to_multi_output_target(y_test)
+    model = train(x_train, y_train, x_test, y_test)
     
     # convnet model
-    y_train = convert_to_general_target(y_train)
-    y_test = convert_to_general_target(y_test)
-    model = train(x_train, y_train, x_test, y_test, default_model='convnet')
+    #y_train = convert_to_general_target(y_train)
+    #y_test = convert_to_general_target(y_test)
+    #model = train(x_train, y_train, x_test, y_test, default_model='convnet')
     
     # pretrain model
     #model = load_model('my_model.h5')

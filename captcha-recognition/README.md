@@ -20,6 +20,17 @@ python train.py
 
 ## 识别新图片
 
+这里提供multi-convnet模型my_model.h5，用于测试
+
 ```bash
 python test.py
+
+# 输出catpcha_img目录下验证码识别结果
+['BQYf']
+['BYwC']
+['E2rn']
+['pQrD']
+['ybmE']
+['QH7k']
+['kEJX']
 ```

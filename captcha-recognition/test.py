@@ -21,5 +21,7 @@ def break_captcha(model, img_path, default_model='convnet'):
 
 if __name__ == '__main__':
     model = load_model('my_model.h5')
-    img_path = 'captcha_img/captcha_2-hnMM.jpg'
-    break_captcha(model, img_path)
+    img_dir = 'captcha_img/'
+    for img in os.listdir(img_dir):
+        img_path = os.path.join(img_dir, img)
+        break_captcha(model, img_path)
