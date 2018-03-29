@@ -4,8 +4,8 @@ CNN验证码整体识别，使用两种不同结构的CNN来做验证码识别�
 
 |Model|Accuracy|Ingore Case Accuracy|
 |----|----|----|
-|convnet|87.8.7%|95.0%|
-|mulit-convnet|82.0%|90.5%|
+|convnet|87.8%|95.0%|
+|mulit-convnet|84.0%|93.0%|
 
 ## 数据收集
 
