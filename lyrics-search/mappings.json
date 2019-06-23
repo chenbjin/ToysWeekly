@@ -1,0 +1,25 @@
+{
+    "mappings": {
+        "dynamic": false,
+        "properties": {
+            "album": {
+                "type": "keyword"
+            },
+            "author": {
+                "type": "keyword"
+            },
+            "composer": {
+                "type": "keyword"
+            }, 
+            "lyric": {
+                "type": "text"
+            },
+            "name": {
+                "type": "text"
+            },
+            "singer": {
+                "type": "keyword"
+            }
+        }
+    }
+}
